@@ -22,7 +22,7 @@
         <div class="dual-banner__values" id="div_dual-banner__values">
           {% for block in section.blocks %}
             <div class="dual-banner__values__item">
-              {{ block.settings.image | img_tag }}
+              {{ block.settings.image | img_tag | replace: '<img src="' , '<img class="lazy2 lazy3" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-src="' }}
               <div {% if section.settings.text_color %}style="color:{{section.settings.text_color}}"{% endif %}>{{ block.settings.title }}</div>
             </div>
           {% endfor %}
@@ -58,9 +58,10 @@
           slide_4_overlay_text  : section.settings.slide_4_overlay_text
         %}
       {% else %}
-        <div class="dual-banner__background__image lazyload image--fade-in" data-bgset="{{ section.settings.background_image | img_url: '600x' }} 600w, {{ section.settings.background_image | img_url: '800x' }} 800w, {{ section.settings.background_image | img_url: '1000x' }} 1000w, {{ section.settings.background_image | img_url: '1200x' }} 1200w, {{ section.settings.background_image | img_url: '1500x' }} 1500w">
+        <div class="dual-banner__background__image lazyloaded image--fade-in lazybg" style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=);"
+                                                                                    data-style="background-image:url({{ section.settings.background_image | img_url: '720x' }})"
+                                                                                    data-mobstyle="background-image:url({{ section.settings.background_image | img_url: '360x' }})">
       {% endif %}
-
     </div>
   </div>
 </section>

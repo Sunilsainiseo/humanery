@@ -280,9 +280,9 @@
 {% assign root_url = routes.root_url %}
 
 {% endcapture %}
-
+{% comment %}
 <style>.ocu-hidden.ocu-hidden.ocu-hidden,.bold_hidden.bold_hidden.bold_hidden{display:none !important}</style>
-<script>
+<script type="lazyload2">
 !function(){
 if (window.performance) {
     const navEntries = window.performance.getEntriesByType && window.performance.getEntriesByType('navigation');
@@ -3924,4 +3924,5 @@ function Store() {
 
 }();
 </script>
+{% endcomment %}
 {% endunless %}

@@ -36,7 +36,7 @@
               {%- assign image_url = collection_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
 
               <div class="aspect-ratio" style="padding-bottom: 100%">
-                <img class="lazyload image--fade-in" data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto" alt="{{ collection_image.alt | escape }}">
+                <img class="lazyloaded image--fade-in lazy2" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-src="{{ collection_image | img_url: '540x' }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto" alt="{{ collection_image.alt | escape }}">
 
                 <noscript>
                   <img src="{{ collection_image | img_url: '450x' }}" alt="{{ collection_image.alt | escape }}">

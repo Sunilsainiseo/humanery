@@ -1,20 +1,17 @@
 {%- assign heading_font_italic = settings.heading_font | font_modify: 'style', 'italic' -%}
-
 {%- assign text_font_medium = settings.text_font | font_modify: 'weight', '500' -%}
 {%- assign text_font_semibold = settings.text_font | font_modify: 'weight', '600' -%}
 {%- assign text_font_bold = settings.text_font | font_modify: 'weight', 'bolder' -%}
 {%- assign text_font_italic = settings.text_font | font_modify: 'style', 'italic' -%}
 {%- assign text_font_bold_italic = text_font_bold | font_modify: 'style', 'italic' -%}
-
 {%- assign text_font_bolder_weight = 'bolder' -%}
-
+<!--
 <link rel="preload" href="{{ settings.heading_font | font_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ settings.text_font | font_url }}" as="font" type="font/woff2" crossorigin>
-
-<style>
+-->
+<style type="lazyload2">
   {{ settings.heading_font | font_face: font_display: 'swap' }}
   {{ settings.text_font | font_face: font_display: 'swap' }}
-
   {%- if text_font_semibold -%}
     {{ text_font_semibold | font_face: font_display: 'swap' }}
     {%- assign text_font_bolder_weight = text_font_semibold.weight -%}
@@ -28,7 +25,8 @@
   {{ text_font_bold | font_face: font_display: 'swap' }}
   {{ text_font_italic | font_face: font_display: 'swap' }}
   {{ text_font_bold_italic | font_face: font_display: 'swap' }}
-
+</style>
+<style>
   :root {
     --default-text-font-size : 15px;
     --base-text-font-size    : {{ settings.base_text_font_size }}px;
@@ -110,7 +108,7 @@
   }
 </style>
 
-<script>
+<script type="lazyload2">
   // IE11 does not have support for CSS variables, so we have to polyfill them
   if (!(((window || {}).CSS || {}).supports && window.CSS.supports('(--a: 0)'))) {
     const script = document.createElement('script');

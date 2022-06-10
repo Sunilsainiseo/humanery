@@ -1,4 +1,4 @@
-<script type="text/javascript" async src="https://edge.personalizer.io/storefront/2.0.0/js/shopify/storefront.min.js?key=4t6zc-fwz1g2a2md5ma3bsn6xy-nohem&shop=humanery.myshopify.com"></script>
+<script type="lazyload2" data-src="https://edge.personalizer.io/storefront/2.0.0/js/shopify/storefront.min.js?key=4t6zc-fwz1g2a2md5ma3bsn6xy-nohem&shop=humanery.myshopify.com"></script>
 <script>
 window.LimeSpot = window.LimeSpot === undefined ? {} : LimeSpot;{% assign t = template | prepend: '/' | append: '.' %}
 {% if t contains '/product.' %}LimeSpot.PageInfo = { Type: "Product", ReferenceIdentifier: "{{ product.id }}"};
@@ -26,7 +26,5 @@ LimeSpot.CartItems = [{{ cart_product_ids | remove_first: "," }}];
 {% if t contains '/collection.' and collection.metafields.LimeSpot['CuratedCollectionVariation'] == "true" %}
 <link rel="canonical" data-owner="LimeSpot" href="https://{{ request.host }}{{ collection.metafields.LimeSpot['StartingCollectionPath'] }}">
 {% endif %}
-
-
 
 {% comment %}Checksum: 3e82ce9556409ed44ee43b32d0642be6{% endcomment %}
