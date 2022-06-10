@@ -1,0 +1,232 @@
+<section class="dual-banner" data-section-id="{{ section.id }}" data-section-type="dual-banner">
+  <div class="container{% if section.settings.show_banner_image_slideshow %} container-dual-banner-slideshow{%endif%}">
+    {% capture section_styles %}
+    {%- if section.settings.background_color -%}
+      background-color:{{section.settings.background_color}};
+    {%- endif -%}
+    {% endcapture %}
+    <div class="dual-banner__content"{% if section_styles != blank  %} style="{{ section_styles }}"{% endif %}>
+      {% if section.settings.title != blank %}
+        {% capture title_styles %}
+        {%- if section.settings.title_size -%}
+          font-size:{{section.settings.title_size}}px;
+        {%- endif -%}
+        {%- if section.settings.text_color -%}
+          color:{{section.settings.text_color}};
+        {%- endif -%}
+        {% endcapture %}
+        <h1 class="dual-banner__title"{% if title_styles != blank  %} style="{{ title_styles }}"{% endif %}>{{ section.settings.title | escape }}</h1>
+      {% endif %}
+
+      {% if section.settings.show_banner_content_values %}
+        <div class="dual-banner__values" id="div_dual-banner__values">
+          {% for block in section.blocks %}
+            <div class="dual-banner__values__item">
+              {{ block.settings.image | img_tag }}
+              <div {% if section.settings.text_color %}style="color:{{section.settings.text_color}}"{% endif %}>{{ block.settings.title }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.cta_url != blank and section.settings.cta_text != blank %}
+        {%- capture button_styles -%}
+        {%- if section.settings.cta_bg -%}
+          background-color:{{section.settings.cta_bg}};
+        {%- endif -%}
+        {%- if section.settings.cta_color -%}
+          color:{{section.settings.cta_color}};
+        {%- endif -%}
+        {%- endcapture -%}
+        <a href="{{section.settings.cta_url}}" class="button button--floating dual-banner__cta"{% if button_styles != blank  %} style="{{ button_styles }}"{% endif %}>{{ section.settings.cta_text }}</a>
+      {% endif %}
+    </div>
+    <div class="dual-banner__background{% if section.settings.show_banner_image_slideshow %} dual-banner__background_slideshow_negative_margin_right{%endif%}">
+      {% if section.settings.show_banner_image_slideshow %}
+        {% render 'slideshow-images',
+          slide_1_image         : section.settings.slide_1_image,
+          slide_2_image         : section.settings.slide_2_image,
+          slide_3_image         : section.settings.slide_3_image,
+          slide_4_image         : section.settings.slide_4_image,
+          slide_1_url           : section.settings.slide_1_url,
+          slide_2_url           : section.settings.slide_2_url,
+          slide_3_url           : section.settings.slide_3_url,
+          slide_4_url           : section.settings.slide_4_url,
+          slide_1_overlay_text  : section.settings.slide_1_overlay_text,
+          slide_2_overlay_text  : section.settings.slide_2_overlay_text,
+          slide_3_overlay_text  : section.settings.slide_3_overlay_text,
+          slide_4_overlay_text  : section.settings.slide_4_overlay_text
+        %}
+      {% else %}
+        <div class="dual-banner__background__image lazyload image--fade-in" data-bgset="{{ section.settings.background_image | img_url: '600x' }} 600w, {{ section.settings.background_image | img_url: '800x' }} 800w, {{ section.settings.background_image | img_url: '1000x' }} 1000w, {{ section.settings.background_image | img_url: '1200x' }} 1200w, {{ section.settings.background_image | img_url: '1500x' }} 1500w">
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Custom Dual Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sub-section 1 : Values"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background color",
+      "default": "#fff"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "Your title"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title font size",
+      "unit": "px",
+      "min": 24,
+      "max": 64,
+      "step": 4,
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Section text color",
+      "default": "#272d38"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Content"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA Link"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "CTA Button background color"
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "CTA Button text color"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_banner_content_values",
+      "label": "Show Value Blocks",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Sub-section 2 : Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_banner_image_slideshow",
+      "label": "Show Banner Image Slideshow",
+      "default": false,
+      "info" : "if set, will replace single image above with slideshow of images below"
+    },
+    {
+      "type": "image_picker",
+      "id": "slide_1_image",
+      "label": "Image for Slide 1"
+    },
+    {
+      "type": "url",
+      "id": "slide_1_url",
+      "label": "Link for Slide 1"
+    },
+    {
+      "type": "text",
+      "id": "slide_1_overlay_text",
+      "label": "Overlay Text for Slide 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "slide_2_image",
+      "label": "Image for Slide 2"
+    },
+    {
+      "type": "url",
+      "id": "slide_2_url",
+      "label": "Link for Slide 2"
+    },
+    {
+      "type": "text",
+      "id": "slide_2_overlay_text",
+      "label": "Overlay Text for Slide 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "slide_3_image",
+      "label": "Image for Slide 3"
+    },
+    {
+      "type": "url",
+      "id": "slide_3_url",
+      "label": "Link for Slide 3"
+    },
+    {
+      "type": "text",
+      "id": "slide_3_overlay_text",
+      "label": "Overlay Text for Slide 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "slide_4_image",
+      "label": "Image for Slide 4"
+    },
+    {
+      "type": "url",
+      "id": "slide_4_url",
+      "label": "Link for Slide 4"
+    },
+    {
+      "type": "text",
+      "id": "slide_4_overlay_text",
+      "label": "Overlay Text for Slide 4"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Item",
+      "type": "item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "richtext",
+          "id": "title",
+          "label": "Item content"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "category": "Banner",
+      "name": "Custom Dual Banner"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,56 @@
+
+<section data-section-id="{{ section.id }}" data-section-type="custom-image">
+  <div {% unless section.settings.edge_to_edge %}class="container container--flush"{% endunless %}>
+        <div class="custom-image">
+
+          <a href="{{ section.settings.link }}">
+            <img class="lazyload image--fade-in" src="{{ section.settings.image | img_url: '600x' }}">
+          </a>
+        
+        </div>
+  </div>
+
+  <style>
+    #shopify-section-{{ section.id }} .custom-image {
+      background-color: {{ section.settings.background_color }};
+    }
+  </style>
+</section>
+
+{% schema %}
+{
+  "name": "Custom Image",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "edge_to_edge",
+      "label": "Full-width",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "info": "for use with images with transparent backgrounds",
+      "default": "transparent"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link",
+      "info": "entire image becomes clickable"
+    }
+  ],
+  "presets": [
+    {
+      "category": "Image",
+      "name": "Custom Image"
+    }
+  ]
+}
+{% endschema %}

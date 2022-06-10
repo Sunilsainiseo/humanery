@@ -1,0 +1,160 @@
+<section class="section" data-section-id="{{ section.id }}" data-section-type="our-values">
+    
+    <div class="container">
+        <header class="section__header">
+            <h2 class="section__title heading h3" >{{ section.settings.title }}</h2>
+        </header>
+        <header class="section__header">
+        <p> {{ section.settings.description }} </p>
+        </header>
+    </div>
+
+    <div class="container">
+        <div class="our-values-row">
+            <div class="our-values-column">
+                <div class="our-values-column-content-wrapper">
+                    <div class="our-values-column-image">
+                        <img loading=lazy
+                            src="{{ section.settings.image_value_1 | img_url: '300x' }}"
+                            alt="{{ section.settings.image_value_1.alt | escape }}"
+                            width="300"
+                            height="300"
+                        >
+                    </div>
+                    <div class="our-values-column-text">
+                        <div class="our-values-column-title">
+                            {{ section.settings.title_value_1 }}
+                        </div>
+                        <div class="our-values-column-desc">
+                            {{ section.settings.desc_value_1 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="our-values-column">
+                <div class="our-values-column-content-wrapper">
+                    <div class="our-values-column-image">
+                        <img loading=lazy
+                            src="{{ section.settings.image_value_2 | img_url: '300x' }}"
+                            alt="{{ section.settings.image_value_2.alt | escape }}"
+                            width="300"
+                            height="300"
+                        >
+                    </div>
+                    <div class="our-values-column-text">
+                        <div class="our-values-column-title">
+                            {{ section.settings.title_value_2 }}
+                        </div>
+                        <div class="our-values-column-desc">
+                            {{ section.settings.desc_value_2 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="our-values-column">
+                <div class="our-values-column-content-wrapper">
+                    <div class="our-values-column-image">
+                        <img loading=lazy
+                            src="{{ section.settings.image_value_3 | img_url: '300x' }}"
+                            alt="{{ section.settings.image_value_3.alt | escape }}"
+                            width="300"
+                            height="300"
+                        >
+                    </div>
+                    <div class="our-values-column-text">
+                        <div class="our-values-column-title">
+                            {{ section.settings.title_value_3 }}
+                        </div>
+                        <div class="our-values-column-desc">
+                            {{ section.settings.desc_value_3 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  </section>
+  
+  {% schema %}
+  {
+    "name": "Our Values",
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Heading for Section",
+            "default": "Our Values Title"
+        },
+        {
+            "type": "text",
+            "id": "description",
+            "label": "Description for Section",
+            "default": "Our Values Description"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_value_1",
+            "label": "Image for Value 1",
+            "info": "600 x 600 .jpg recommended"
+        },
+        {
+            "type": "text",
+            "id": "title_value_1",
+            "label": "Heading for Value 1",
+            "default": "Your Title"
+        },
+        {
+            "type": "text",
+            "id": "desc_value_1",
+            "label": "Description for Value 1",
+            "default": "Your Description"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_value_2",
+            "label": "Image for Value 2",
+            "info": "600 x 600 .jpg recommended"
+        },
+        {
+            "type": "text",
+            "id": "title_value_2",
+            "label": "Heading for Value 2",
+            "default": "Your Title"
+        },
+        {
+            "type": "text",
+            "id": "desc_value_2",
+            "label": "Description for Value 2",
+            "default": "Your Description"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_value_3",
+            "label": "Image for Value 3",
+            "info": "600 x 600 .jpg recommended"
+        },
+        {
+            "type": "text",
+            "id": "title_value_3",
+            "label": "Heading for Value 3",
+            "default": "Your Title"
+        },
+        {
+            "type": "text",
+            "id": "desc_value_3",
+            "label": "Description for Value 3",
+            "default": "Your Description"
+        }
+    ],
+    "presets": [
+      {
+        "category": "Our Values",
+        "name": "Our Values",
+        "settings": {}
+      }
+    ]
+  }
+  {% endschema %}

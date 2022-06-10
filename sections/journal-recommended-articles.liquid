@@ -1,0 +1,91 @@
+{%- if section.settings.show_popular_articles -%}
+  <section class="journal-recommended" data-section-type="journal-recommended">
+    <div class="journal-recommended__wrapper container">
+      <div class="journal-recommended__header">
+        {%- if section.settings.popular_articles_header != blank -%}
+          <h2 class="journal-recommended__heading">{{ section.settings.popular_articles_header }}</h2>
+        {%- endif -%}
+        <div class="journal-recommended__controls">
+          <button class="journal-recommended__button journal-recommended__button--prev disabled">{%- render 'icon', icon: 'arrow-left-journal' -%}</button>
+          <button class="journal-recommended__button journal-recommended__button--next">{%- render 'icon', icon: 'arrow-right-journal' -%}</button>
+        </div>
+      </div>
+      <div class="popular-articles">
+        {%- if section.settings.popular_article_1 != blank and section.settings.popular_article_1 != article.handle -%}
+          {%- assign pop_article = articles[section.settings.popular_article_1] -%}
+          <div class="popular-articles__slide">{%- render 'blog-item-journal', article: pop_article -%}</div>
+        {%- endif -%}
+        {%- if section.settings.popular_article_2 != blank and section.settings.popular_article_2 != article.handle -%}
+          {%- assign pop_article = articles[section.settings.popular_article_2] -%}
+          <div class="popular-articles__slide">{%- render 'blog-item-journal', article: pop_article -%}</div>
+        {%- endif -%}
+        {%- if section.settings.popular_article_3 != blank and section.settings.popular_article_3 != article.handle -%}
+          {%- assign pop_article = articles[section.settings.popular_article_3] -%}
+          <div class="popular-articles__slide">{%- render 'blog-item-journal', article: pop_article -%}</div>
+        {%- endif -%}
+        {%- if section.settings.popular_article_4 != blank and section.settings.popular_article_4 != article.handle -%}
+          {%- assign pop_article = articles[section.settings.popular_article_4] -%}
+          <div class="popular-articles__slide">{%- render 'blog-item-journal', article: pop_article -%}</div>
+        {%- endif -%}
+        {%- if section.settings.popular_article_5 != blank and section.settings.popular_article_5 != article.handle -%}
+          {%- assign pop_article = articles[section.settings.popular_article_5] -%}
+          <div class="popular-articles__slide">{%- render 'blog-item-journal', article: pop_article -%}</div>
+        {%- endif -%}
+        {%- if section.settings.popular_article_6 != blank and section.settings.popular_article_6 != article.handle -%}
+          {%- assign pop_article = articles[section.settings.popular_article_6] -%}
+          <div class="popular-articles__slide">{%- render 'blog-item-journal', article: pop_article -%}</div>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Journal: Articles",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_popular_articles",
+        "label": "Show Popular Articles",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "popular_articles_header",
+        "label": "Header",
+        "default": "Popular articles"
+      },
+      {
+        "type": "article",
+        "id": "popular_article_1",
+        "label": "Article #1"
+      },
+      {
+        "type": "article",
+        "id": "popular_article_2",
+        "label": "Article #2"
+      },
+      {
+        "type": "article",
+        "id": "popular_article_3",
+        "label": "Article #3"
+      },
+      {
+        "type": "article",
+        "id": "popular_article_4",
+        "label": "Article #4"
+      },
+      {
+        "type": "article",
+        "id": "popular_article_5",
+        "label": "Article #5"
+      },
+      {
+        "type": "article",
+        "id": "popular_article_6",
+        "label": "Article #6"
+      }
+    ]
+  }
+{% endschema %}

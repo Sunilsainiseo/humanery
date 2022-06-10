@@ -1,0 +1,120 @@
+{%- assign collection_suffix = 'influencer' -%}
+<section data-section-id="{{ section.id }}" data-section-type="list-collections">
+  <div class="container">
+    <div class="page__sub-header">
+      {%- include 'breadcrumb-list-collections' -%}
+    </div>
+
+    {%- assign has_selected_collections = false -%}
+
+    {%- for collection in collections -%}
+      {%- if collection.template_suffix contains collection_suffix -%}
+        {%- assign has_selected_collections = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_selected_collections -%}
+      <div class="collection-list__section">
+        <header class="page__header page__header--stack page__header--centered">
+          <h1 class="page__title heading h1">{{ 'collection.general.influencers' | t }}</h1>
+        </header>
+
+        <div class="quick-links">
+          {%- for collection in collections -%}
+            {%- if collection.template_suffix contains collection_suffix -%}
+              {%- assign collection_image = collection.image | default: collection.products.first.featured_media -%}
+              {%- assign max_height_mobile = 50 -%}
+              {%- assign max_height_desktop = 90 -%}
+              {%- assign max_width_mobile = 100 | divided_by: collection_image.aspect_ratio | at_most: 100 -%}
+              {%- assign max_width_desktop = 140 | divided_by: collection_image.aspect_ratio | at_most: 140 -%}
+
+              {%- if collection_image.aspect_ratio < 1.5 -%}
+                {%- if collection_image.height < max_height_desktop -%}
+                  {%- assign max_width_desktop = collection_image.width | times: collection_image.aspect_ratio | round -%}
+                {%- else -%}
+                  {%- assign max_width_desktop = max_height_desktop | times: collection_image.aspect_ratio | round -%}
+                {%- endif -%}
+
+                {%- if collection_image.height < max_height_mobile -%}
+                  {%- assign max_width_mobile = collection_image.width | times: collection_image.aspect_ratio | round -%}
+                {%- else -%}
+                  {%- assign max_width_mobile = max_height_mobile | times: collection_image.aspect_ratio | round -%}
+                {%- endif -%}
+              {%- elsif collection_image.aspect_ratio > 2.5 -%}
+                {%- assign max_width_mobile = 100 -%}
+                {%- assign max_width_desktop = 140 -%}
+              {%- endif -%}
+
+              <a id="block-{{ forloop.index0 }}" href="{{ collection.url }}" class="quick-links__link">
+                <div  class="quick-links__image-container">
+                  <div class="quick-links__image-ie-fix">
+                    <div class="aspect-ratio" style="padding-bottom: {{ 100.0 | divided_by: collection_image.aspect_ratio }}%">
+                      <img class="lazyload image--fade-in" data-src="{{ collection_image | img_url: '280x' }}" alt="{{ collection_image.alt | escape }}">
+
+                      <noscript>
+                        <img src="{{ collection_image | img_url: '280x' }}" alt="{{ collection_image.alt | escape }}">
+                      </noscript>
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+              <style>
+                #block-{{ forloop.index0 }} .quick-links__image-ie-fix {
+                  max-width: {{ max_width_mobile }}px;
+                }
+
+                @media screen and (min-width: 641px)  {
+                  #block-{{ forloop.index0 }} .quick-links__image-ie-fix {
+                    max-width: {{ max_width_desktop }}px;
+                  }
+                }
+              </style>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <style>
+    #shopify-section-{{ section.id }} .collection-block-item--overlay::before {
+      {%- assign overlay_opacity = section.settings.collection_overlay_opacity | divided_by: 100.0 -%}
+      background: {{ '#000000' | color_modify: 'alpha', overlay_opacity }}
+    }
+  </style>
+</section>
+
+{% schema %}
+{
+  "name": "Influen. collection list",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "You can [learn more](https://support.maestrooo.com/article/185-collection-how-to-use-the-brand-template) about how to set up brand collections."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_title",
+      "label": "Show collection title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_overlay",
+      "label": "Show collection overlay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "collection_overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 20
+    }
+  ]
+}
+{% endschema %}

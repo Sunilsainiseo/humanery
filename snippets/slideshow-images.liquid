@@ -1,0 +1,127 @@
+{% comment %}
+    creating this snippet to contain code for a custom embedded slideshow of images
+    for use within the custom dual banner section
+
+    based on
+    https://www.w3schools.com/howto/howto_js_slideshow.asp
+{% endcomment %}
+
+<script>
+
+    let slideIndex = 1;
+    
+    // Next/previous controls
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+    
+    // Thumbnail image controls
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+
+        let dots = document.getElementsByClassName("dot");
+        
+        if (n > slides.length) {
+            slideIndex = 1 
+        }
+        
+        if (n < 1) {
+            slideIndex = slides.length
+        }
+
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+
+        slides[slideIndex-1].style.display = "block";
+        dots[slideIndex-1].className += " active";
+    }
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        let slideIndex = 1;
+        showSlides(slideIndex);
+    });
+</script>
+
+{% comment %}
+    Slideshow container
+{% endcomment %}
+<div id="slideshow-container" class="">
+    
+    {% if slide_1_image %}
+        {% comment %}
+            wrap slide elements in Link if URL provided
+            not semantically correct to use an inline a tag like this, but should work
+        {% endcomment %}
+        {% if slide_1_url %}<a href="{{ slide_1_url }}">{% endif %}
+            <div class="mySlides fade">
+                {% comment %}  Full-width image with number and caption text {% endcomment %}
+                {% comment %}  <div class="numbertext">1 / 3</div> {% endcomment %}
+
+                <img src="{{ slide_1_image | img_url: '1500x' }}">
+
+                {% comment %}
+                    text to overlay above the image
+                    reference on styling the text overlay : https://ishadeed.com/article/handling-text-over-image-css/
+                {% endcomment %}
+                {% if slide_1_overlay_text %}
+                    <div class="text-overlay">{{ slide_1_overlay_text | escape }}</div>
+                {% endif %}
+            </div>
+        {% if slide_1_url %}</a>{% endif %}
+    {% endif %}
+
+    {% if slide_2_image %}
+        {% if slide_2_url %}<a href="{{ slide_2_url }}">{% endif %}
+            <div class="mySlides fade">
+                <img src="{{ slide_2_image | img_url: '1500x' }}">
+                {% if slide_2_overlay_text %}
+                    <div class="text-overlay">{{ slide_2_overlay_text | escape }}</div>
+                {% endif %}
+            </div>
+        {% if slide_2_url %}</a>{% endif %}
+    {% endif %}
+
+    {% if slide_3_image %}
+        {% if slide_3_url %}<a href="{{ slide_3_url }}">{% endif %}
+            <div class="mySlides fade">
+                <img src="{{ slide_3_image | img_url: '1500x' }}">
+                {% if slide_3_overlay_text %}
+                    <div class="text-overlay">{{ slide_3_overlay_text | escape }}</div>
+                {% endif %}
+            </div>
+        {% if slide_3_url %}</a>{% endif %}
+    {% endif %}
+  
+    {% if slide_4_image %}
+        {% if slide_4_url %}<a href="{{ slide_4_url }}">{% endif %}
+            <div class="mySlides fade">
+                <img src="{{ slide_4_image | img_url: '1500x' }}">
+                {% if slide_4_overlay_text %}
+                    <div class="text-overlay">{{ slide_4_overlay_text | escape }}</div>
+                {% endif %}
+            </div>
+        {% if slide_4_url %}</a>{% endif %}
+    {% endif %}
+
+    {% comment %} Next and previous buttons {% endcomment %}
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+</div>
+<br>
+
+{% comment %} The dots/circles {% endcomment %}
+<div class="slideshow_dots" style="text-align:center">
+{% if slide_1_image %} <span class="dot" onclick="currentSlide(1)"></span> {% endif %}
+{% if slide_2_image %} <span class="dot" onclick="currentSlide(2)"></span> {% endif %}
+{% if slide_3_image %} <span class="dot" onclick="currentSlide(3)"></span> {% endif %}
+{% if slide_4_image %} <span class="dot" onclick="currentSlide(4)"></span> {% endif %}
+</div>

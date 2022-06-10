@@ -1,0 +1,23 @@
+{%- comment -%} Loop Subscription Snippet v5.43 {%- endcomment -%}
+
+{% comment %}
+	LOOP SUBSCRIPTIONS (https://apps.shopify.com/loop-subscriptions)
+
+  DO NOT modify source code of this file because
+	It is automatically generated from LOOP SUBSCRIPTIONS WIDGET DESIGN
+	If you need to make change, please do it using our standard widget design settings or create a custom widget design in LOOP SUBSCRIPTIONS app.
+{% endcomment %}
+
+{%- if content_for_header contains 'loop_snippets' -%}
+{%- if type contains 'product-widget' -%}
+
+	{% render 'loop-widget-standard' type: 'product-widget', product: product %}
+
+{%- elsif type == 'customer-portal-link' -%}
+  <a href="/a/loop_subscriptions/auth?customer_id={{customer.id}}&myshopify_domain={{shop.permanent_domain}}" id="loop-subscriptions-customer-portal-link">
+    <button class="btn" style="padding: 10px 20px;margin:0 0 20px 0">My Subscriptions</button>
+  </a>
+{%- endif -%}
+{%- endif -%}
+
+

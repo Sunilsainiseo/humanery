@@ -1,0 +1,55 @@
+{%- liquid
+  assign article_words = article.content | strip_html | split: ' ' | size
+  assign words_per_minute = 250
+  assign time_to_read = article_words | times: 1.0 | divided_by: words_per_minute | round
+
+  assign extra_class = ''
+  if size and size != blank
+    assign extra_class = extra_class | append: 'blog-item--' | append: size
+  endif
+-%}
+
+<div class="blog-item {{ extra_class }}">
+  {%- if article.image != blank -%}
+  <a href="{{ article.url }}" class="blog-item__image">
+    <img class="lazyload image--fade-in" data-src="{{ article.image.src | img_url: '450x' }}" alt="{{ article.title }}">
+  </a>
+  {%- endif -%}
+  <div class="blog-item__content">
+    <a href="{{ article.url }}" class="blog-item__title">{{ article.title }}</a>
+    <p class="blog-item__excerpt">{{ article.excerpt_or_content | strip_html | truncate: 150 }}</p>
+    <div class="blog-meta">
+      {%- if size and size == 'large' -%}
+      <a href="{{ article.url }}" title="{{ article.title }}" class="blog-meta__item--read-more">
+        <span>{{ 'blog.article.continue_reading' | t }}</span>
+        {%- render 'icon', icon: 'arrow-right-journal' -%}
+      </a>
+      {%- endif -%}
+
+      {%- comment -%}
+        hiding the author tag as requested by the content writing team
+
+      <div class="blog-meta__item blog-meta__item--author">
+        {%- render 'icon', icon: 'author-journal' -%}
+        <span>{{ article.author }}</span>
+      </div>
+
+      {%- endcomment -%}
+
+      <div class="blog-meta__item blog-meta__item--date">
+        {%- if size and size == 'large' -%}{%- render 'icon', icon: 'calendar-journal' -%}{%- endif -%}
+        <span>{{ article.published_at | date: format: 'abbreviated_date' }}</span>
+      </div>
+      <div class="blog-meta__item blog-meta__item--reading">
+        {%- comment -%}
+          time to read does not work for blog posts written in pagefly
+          the blog post's content is not available at slide_article.content
+        {%- endcomment -%}
+        {%- if time_to_read > 0 -%}
+          {%- render 'icon', icon: 'clock-journal' -%}
+          <span>{{ time_to_read }} {{ time_to_read | pluralize: 'min', 'mins' }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>

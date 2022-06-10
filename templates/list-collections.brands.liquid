@@ -1,0 +1,25 @@
+
+{%comment%}
+    for the list brand template, moving the breadcrumb up from sections/list-collections-brands-template.liquid to here
+    TODO : should do this for other list template types as well
+{%endcomment%}
+
+<div class="container">
+    <div class="page__sub-header">
+        {%- render 'breadcrumb-list-collections' -%}
+    </div>
+</div>
+
+{%comment%}
+    see the comment at the beginning of snippets/logo-list-brand-collection-list.liquid
+    for a description of the motivation behind these three logo-list-brands-list-* sections
+{%endcomment%}
+{% section 'logo-list-brands-list-featured-brands' %}
+{% section 'logo-list-brands-list-new-brands' %}
+{% section 'logo-list-brands-list-clean-brands' %}
+
+{% section 'list-collections-brands-featured.liquid' %}
+
+{% section 'list-collections-brands-template' %}
+{% section 'list-collections-brands-image-template' %}
+{% section 'list-collections-brands-name-directory' %}

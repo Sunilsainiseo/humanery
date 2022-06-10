@@ -1,0 +1,239 @@
+{%- liquid
+  assign slide_count = 0
+  for block in section.blocks
+    if block.type == 'featured_slide'
+      assign slide_count = slide_count | plus: 1
+    endif 
+  endfor
+-%}
+
+<section class="journal-header">
+  <div class="container">
+    <h1 class="journal-header__heading">{{ blog.title }}</h1>
+  </div>
+</section>
+
+<section class="journal-blog">
+  <div class="journal-blog__wrapper container">
+    <main class="journal-blog__main">
+      {%- if slide_count > 0 -%}
+      <div class="journal-featured" data-section-type="journal-featured-slider">
+        {%- for block in section.blocks -%}
+          {%- assign bl = block.settings -%}
+          {%- if block.type == 'featured_slide' -%}
+            {%- liquid
+              assign slide_article = null
+
+              if bl.article != blank
+                assign slide_article = articles[bl.article]
+                assign slide_header = slide_article.title
+                assign slide_desc = slide_article.excerpt_or_content | strip_html | truncate: 100
+                assign slide_image = slide_article.image.src | img_url: '700x'
+                assign article_words = slide_article.content | strip_html | split: ' ' | size
+                assign words_per_minute = 250
+                assign time_to_read = article_words | times: 1.0 | divided_by: words_per_minute | round
+              else
+                assign slide_header = bl.title
+                assign slide_desc = bl.desc
+                assign slide_image = bl.background | img_url: '700x'
+              endif
+            -%}
+            <div class="journal-featured__slide">
+              <div>
+                <picture class="journal-featured__image">
+                  <img class="lazyload image--fade-in" data-src="{{ slide_image }}" alt="{{ slide_header }}">
+                </picture>
+                <div class="journal-featured__content">
+                  {%- if slide_header != blank -%}
+                    <p class="journal-featured__header">
+                      {%- if slide_article -%}<a href="{{ slide_article.url }}">{{ slide_header }}</a>{%- else -%}{{ slide_header }}{%- endif -%}
+                    </p>
+                  {%- endif -%}
+                  {%- if slide_desc != blank -%}
+                    <p class="journal-featured__desc">{{ slide_desc }}</p>
+                  {%- endif -%}
+                  {%- if slide_article -%}
+                    <div class="blog-meta">
+
+                    {%- comment -%}
+                      hiding the author tag as requested by the content writing team
+
+                      <div class="blog-meta__item blog-meta__item--author">
+                        {%- render 'icon', icon: 'author-journal' -%}
+                        <span>{{ slide_article.author }}</span>
+                      </div>
+                    {%- endcomment -%}
+
+                      <div class="blog-meta__item blog-meta__item--date">
+                        {%- render 'icon', icon: 'calendar-journal' -%}
+                        <span>{{ slide_article.published_at | date: format: 'abbreviated_date' }}</span>
+                      </div>
+                      <div class="blog-meta__item blog-meta__item--reading">
+                        {%- comment -%}
+                          time to read does not work for blog posts written in pagefly
+                          the blog post's content is not available at slide_article.content
+                        {%- endcomment -%}
+                        {%- if time_to_read > 0 -%}
+                          {%- render 'icon', icon: 'clock-journal' -%}
+                          <span>{{ time_to_read }} {{ time_to_read | pluralize: 'min', 'mins' }}</span>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+      {%- if blog.articles.size > 0 -%}
+        <div class="journal-blog__list">
+          {%- paginate blog.articles by section.settings.posts_per_page -%}
+            {%- for article in blog.articles -%}
+              {%- liquid
+                assign article_category = ''
+                for tag in article.tags
+                  if tag contains '_category:'
+                    assign article_category = tag | split: ':' | last | upcase
+                  endif
+                endfor
+              -%}
+              {%- if article_category != '' -%}
+                <p class="blog-item-category">{{ article_category }}</p>
+              {%- endif -%}
+
+              {%- render 'blog-item-journal', article: article, size: 'large' -%}
+            {%- endfor -%}
+            {%- render 'pagination', paginate: paginate -%}
+          {%- endpaginate -%}
+        </div>
+      {%- else -%}
+        <p class="journal-blog__no-results">{%- if current_tags != blank -%}{{ 'no_results_tags' | t }}{%- else -%}{{ 'no_results' | t }}{%- endif -%}</p>
+      {%- endif -%}
+    </main>
+    <aside class="journal-blog__sidebar">
+      <div class="journal-blog__sidebar-content">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- assign bl = block.settings -%}
+
+            {%- if block.type == 'filter_by_tags' -%}
+              {%- assign all_tags = bl.tags | newline_to_br | split: '<br />' | join: '|' -%}
+              <div class="blog-block blog-tags">
+                {%- if bl.title != blank -%}
+                  <h2 class="blog-block__header">{{ bl.title }}</h2>
+                {%- endif -%}
+                <ul class="blog-block__list">
+                  {%- for tag in blog.all_tags -%}
+                    {%- liquid
+                      assign is_category = false
+                      assign real_tag = tag
+                      if tag contains '_category:'
+                        assign is_category = true
+                        assign real_tag = tag | split: ':' | last
+                      endif
+                    -%}
+                    {%- if all_tags contains tag -%}
+                      <li class="blog-block__item">
+                        {%- if current_tags contains tag -%}
+                          {{ real_tag | link_to_remove_tag: tag | replace: 'title=', 'class="blog-tags__tag active" title=' | replace: '_category:', '' }}
+                        {%- else -%}
+                          {%- if is_category -%}
+                            {{ real_tag | link_to_tag: tag | replace: 'title=', 'class="blog-tags__tag" title=' | replace: '_category:', '' }}
+                          {%- else -%}
+                            {{ real_tag | link_to_add_tag: tag | replace: 'title=', 'class="blog-tags__tag" title=' | replace: '_category:', '' }}
+                          {%- endif -%}
+                        {%- endif -%}
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </aside>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Journal: Template",
+    "locales": {
+      "en": {
+        "no_results": "Sorry, we couldn't find any posts.",
+        "no_results_tags": "Sorry, we couldn't find any posts with these tags."
+      }
+    },
+    "settings": [
+      {
+        "type": "range",
+        "id": "posts_per_page",
+        "min": 5,
+        "max": 20,
+        "step": 1,
+        "label": "Posts per page",
+        "default": 10
+      }
+    ],
+    "blocks": [
+      {
+        "type": "filter_by_tags",
+        "name": "Filter by tags",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label"
+          },
+          {
+            "type": "textarea",
+            "id": "tags",
+            "label": "Tags",
+            "info": "One per line"
+          }
+        ]
+      },
+      {
+        "type": "featured_slide",
+        "name": "Featured slide",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Featured article"
+          },
+          {
+            "type": "article",
+            "id": "article",
+            "label": "Article"
+          },
+          {
+            "type": "header",
+            "content": "Custom content"
+          },
+          {
+            "type": "paragraph",
+            "content": "You can use your own content if you do not want to highlight any article."
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Header"
+          },
+          {
+            "type": "textarea",
+            "id": "desc",
+            "label": "Description"
+          },
+          {
+            "type": "image_picker",
+            "id": "background",
+            "label": "Background"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

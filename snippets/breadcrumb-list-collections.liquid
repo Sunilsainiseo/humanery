@@ -1,0 +1,11 @@
+<nav aria-label="{{ 'general.breadcrumb.title' | t }}" class="breadcrumb">
+  <ol class="breadcrumb__list" role="list">
+    <li class="breadcrumb__item">
+      <a class="breadcrumb__link link" href="{{ routes.root_url }}">{{ 'general.breadcrumb.home' | t }}</a> {%- render 'icon', icon: 'arrow-right' -%}
+    </li>
+    
+    <li class="breadcrumb__item">
+      <span class="breadcrumb__link">{%- render 'list-collections-title' -%}</span>
+    </li>
+  </ol>
+</nav>

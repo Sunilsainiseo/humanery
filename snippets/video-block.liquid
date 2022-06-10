@@ -1,0 +1,17 @@
+{% capture extra_class %}{{ extra_class }} {% if video_ratio != blank %}video-block--{{ video_ratio }}{% endif %}{% endcapture %}
+<div class="video-block {{ extra_class }}">
+  <video class="video-block__player" 
+    {% if video_url != blank %}data-src="{{ video_url }}"{% endif %}
+    {% if video_desktop != blank %}data-src-desktop="{{ video_desktop }}"{% endif %}
+    {% if video_mobile != blank %}data-src-mobile="{{ video_mobile }}"{% endif %}
+    {% if autoplay == true %}autoplay muted playsinline{% endif %}
+    {% if loop == true %}loop{% endif %}
+    {% if controls == true %}controls{% endif %}
+    controlsList="nodownload"
+  ></video>
+  {%- unless autoplay == true and controls == null -%}
+  <div class="video-block__overlay {% unless autoplay and autoplay == "true" %}visible{% endunless %}" {% if video_poster != blank %}style="background-image: url('{{ video_poster }}')"{% endif %}>
+    <button class="video-block__button">{%- render 'icon', icon: 'play' -%}</button>
+  </div>
+  {%- endunless -%}
+</div>

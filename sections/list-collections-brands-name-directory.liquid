@@ -1,0 +1,83 @@
+{%- assign brand_collection_suffix = 'brand' -%}
+
+{% if section.settings.enable_section %}
+    <section data-section-id="{{ section.id }}" data-section-type="list-collections">
+        <div class="container">
+
+            <header class="section_header">
+                <h2 class="section__title heading h3">{{ 'collection.general.all_brands_title' | t }}</h2>
+            </header>
+
+            {% assign brand_collections = collections | where: "template_suffix", brand_collection_suffix %}
+
+            <div class="grid brand-collection-text-directory-grid">
+
+                {% assign current_letter = '' %}
+
+                {% for brand_collection in brand_collections %}
+
+                    {% assign brand_collection_title_first_letter = brand_collection.title | strip_html | upcase | truncate: 1, '' %}
+
+                    {% comment %} ignore brand collection titles starting with non-alphabetic characters {% endcomment %}
+                    {% unless 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' contains brand_collection_title_first_letter %}
+                        {% continue %}
+                    {% endunless %}
+
+                    {% comment %} create section for brand collections starting with a new letter {% endcomment %}
+                    {% if brand_collection_title_first_letter != current_letter %}
+
+                        {% comment %} verify we have collected brand collections from a previous letter {% endcomment %}
+                        {% if forloop.first != true and
+                              starting_letter_div   and
+                              brand_collection_divs_in_current_letter %}
+                            {% comment %} render brand collections collected at the previous starting letter {% endcomment %}
+                            <div class="grid__cell 1/2--tablet 1/3--lap-and-up">
+                                {{ starting_letter_div }}
+                                {{ brand_collection_divs_in_current_letter }}
+                            </div>
+                            {% comment %} clear set of collected brand collections at a letter to start collecting at a new letter {% endcomment %}
+                            {% assign brand_collection_divs_in_current_letter = '' %}
+                        {% endif %}
+
+                        {% comment %} 
+                            capture the element displaying the starting letter
+                            to be rendered later after all Brand Collections starting with that letter have been captured
+                        {% endcomment %}
+                        {%- capture starting_letter_div -%}
+                            <div class="brand-collection-text-directory-starting-letter"><a name="{{ brand_collection_title_first_letter }}"></a>{{ brand_collection_title_first_letter }}</div>
+                        {%- endcapture -%}
+
+                    {% endif %}
+
+                    {% comment %} add element for current Brand Collection to set of Brand Collections starting with the current letter {% endcomment %}
+                    {%- capture next_brand_collection_div -%}
+                        <li> <a class="brand-collection-text-directory-hover" href="{{ brand_collection.url }}"> {{ brand_collection.title }} </a> </li>
+                    {%- endcapture -%}
+                    {% assign brand_collection_divs_in_current_letter = brand_collection_divs_in_current_letter | append: next_brand_collection_div %}
+
+                    {% assign current_letter = brand_collection_title_first_letter %}
+                {% endfor %}
+                
+            </div>
+        
+        </div>
+    </section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Brand Coll. Directory",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "displays a text based directory listing brand collections by collection title"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_section",
+      "label": "Show this section",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

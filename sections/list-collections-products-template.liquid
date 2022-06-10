@@ -1,0 +1,86 @@
+<section data-section-id="{{ section.id }}" data-section-type="list-collections">
+  <div class="container">
+    <div class="page__sub-header">
+      {%- include 'breadcrumb-list-collections' -%}
+    </div>
+
+    {%- assign has_normal_collections = false -%}
+
+    {%- for collection in collections -%}
+      {%- if collection.template_suffix == '' -%}
+        {%- assign has_normal_collections = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_normal_collections -%}
+      {%- paginate collections by 48 -%}
+        <div class="collection-list__section">
+          <header class="page__header page__header--stack page__header--centered">
+            <h1 class="page__title heading h1">{{ 'collection.general.all_collections' | t }}</h1>
+          </header>
+
+          <div class="grid">
+            {%- for collection in collections -%}
+              {%- if collection.template_suffix == '' -%}
+                <div class="grid__cell 1/3--tablet 1/4--lap-and-up">
+                  <a href="{{ collection.url }}" class="collection-block-item {% if section.settings.show_collection_overlay %}collection-block-item--overlay{% endif %}">
+                    <div class="aspect-ratio" style="padding-bottom: 100%">
+                      <div class="collection-block-item__image lazyload image--fade-in" data-bg="{{ collection.image | default: collection.products.first.featured_media | img_url: '850x' }}"></div>
+                    </div>
+
+                    {%- if section.settings.show_collection_title -%}
+                      <p class="collection-block-item__title heading h2">{{ collection.title }}</p>
+                    {%- endif -%}
+                  </a>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+
+  <style>
+    #shopify-section-{{ section.id }} .collection-block-item--overlay::before {
+      {%- assign overlay_opacity = section.settings.collection_overlay_opacity | divided_by: 100.0 -%}
+      background: {{ '#000000' | color_modify: 'alpha', overlay_opacity }}
+    }
+  </style>
+</section>
+
+{% schema %}
+{
+  "name": "Product collection list",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "You can [learn more](https://support.maestrooo.com/article/185-collection-how-to-use-the-brand-template) about how to set up brand collections."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_title",
+      "label": "Show collection title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_overlay",
+      "label": "Show collection overlay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "collection_overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 20
+    }
+  ]
+}
+{% endschema %}

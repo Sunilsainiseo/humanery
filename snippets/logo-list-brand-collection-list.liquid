@@ -1,0 +1,116 @@
+{%comment%}
+    this is an implementation of a hack to support using multiple Logo List sections in the List Brand Collections Template
+    
+    this snippet is a copy of the original sections/logo-list.liquid (everything within the parent section tag)
+
+    we will have three different sections in their own files, each representing a Logo List on the List Brand Collections Template
+    each of those three differently named sections will be identical and will reuse this snippet to implement a Logo List
+    that way, we're not replicating the original Logo List code more than once, and the new sections will share the same code
+
+    the three duplicate sections should be identical except for some defaults in their schemas
+    sections/logo-list-brands-list-featured-brands.liquid
+    sections/logo-list-brands-list-clean-brands.liquid
+    sections/logo-list-brands-list-new-brands.liquid
+
+    this is a hack that is motivated by a fundamental limitation of Shopify Sections 
+    Shopify's implementation of Sections doesn't seem to allow using multiple instances of the same type of section within the same template
+    I wanted to use multiple logo-lists in templates/list-collections.brands.liquid
+    but this causes problems.
+    the same entered settings for one logo list such as title were replicated across all of them
+
+    a workaround is to create differently named sections
+    ref : https://community.shopify.com/c/shopify-design/how-to-use-the-same-section-multiple-times-on-the-same-template/td-p/449013
+{%endcomment%}
+
+<div class="container">
+    {%- if section.settings.title != blank -%}
+      <header class="section__header">
+        <h2 class="section__title heading h3">{{ section.settings.title | escape }}</h2>
+
+        {%- if section.settings.link_title != blank and section.settings.link != blank -%}
+          <a href="{{ section.settings.link }}" class="section__action-link link">{{ section.settings.link_title | escape }} {% render 'icon', icon: 'tail-right' %}</a>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="quick-links">
+      {%- for block in section.blocks -%}
+        <a {% if block.settings.link %}href="{{ block.settings.link }}"{% endif %} class="quick-links__link" {{ block.shopify_attributes }}>
+          {%- if block.settings.image -%}
+            {%- assign max_height_mobile = 40 -%}
+            {%- assign max_height_desktop = 70 -%}
+            {%- assign max_width_mobile = 100 | divided_by: block.settings.image.aspect_ratio | at_most: 100 -%}
+            {%- assign max_width_desktop = 140 | divided_by: block.settings.image.aspect_ratio | at_most: 140 -%}
+
+            {%- if block.settings.image.aspect_ratio < 1.5 -%}
+              {%- if block.settings.image.height < max_height_desktop -%}
+                {%- assign max_width_desktop = block.settings.image.width | times: block.settings.image.aspect_ratio | round -%}
+              {%- else -%}
+                {%- assign max_width_desktop = max_height_desktop | times: block.settings.image.aspect_ratio | round -%}
+              {%- endif -%}
+
+              {%- if block.settings.image.height < max_height_mobile -%}
+                {%- assign max_width_mobile = block.settings.image.width | times: block.settings.image.aspect_ratio | round -%}
+              {%- else -%}
+                {%- assign max_width_mobile = max_height_mobile | times: block.settings.image.aspect_ratio | round -%}
+              {%- endif -%}
+            {%- elsif block.settings.image.aspect_ratio > 2.5 -%}
+              {%- assign max_width_mobile = 100 -%}
+              {%- assign max_width_desktop = 140 -%}
+            {%- endif -%}
+
+            <div id="block-{{ block.id }}" class="quick-links__image-container">
+              <div class="quick-links__image-ie-fix">
+                <div class="aspect-ratio" style="padding-bottom: {{ 100.0 | divided_by: block.settings.image.aspect_ratio }}%">
+                  <img class="lazyload image--fade-in" data-src="{{ block.settings.image | img_url: '280x' }}" alt="{{ block.settings.image.alt | escape }}">
+
+                  <noscript>
+                    <img src="{{ block.settings.image | img_url: '280x' }}" alt="{{ block.settings.image.alt | escape }}">
+                  </noscript>
+                </div>
+              </div>
+            </div>
+
+            <style>
+              #block-{{ block.id }} .quick-links__image-ie-fix {
+                max-width: {{ max_width_mobile }}px;
+              }
+
+              @media screen and (min-width: 641px) {
+                #block-{{ block.id }} .quick-links__image-ie-fix {
+                  max-width: {{ max_width_desktop }}px;
+                }
+              }
+            </style>
+          {%- else -%}
+            <div class="quick-links__image-container">
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+
+      <style>
+        /* Based on the number of logos, we have to dynamically re-calculate the width of each each */
+        @media screen and (min-width: 641px) {
+          {%- assign number_of_rows = section.blocks.size | divided_by: 3.0 | ceil -%}
+          {%- assign max_logos_per_row = section.blocks.size | times: 1.0 | divided_by: number_of_rows | ceil -%}
+          {%- assign logo_width = 100.0 | divided_by: max_logos_per_row -%}
+
+          #shopify-section-{{ section.id }} .quick-links__link {
+            width: {{ logo_width }}%;
+          }
+        }
+
+        @media screen and (min-width: 1000px) {
+          {%- assign number_of_rows = section.blocks.size | divided_by: 6.0 | ceil -%}
+          {%- assign max_logos_per_row = section.blocks.size | times: 1.0 | divided_by: number_of_rows | ceil -%}
+          {%- assign logo_width = 100.0 | divided_by: max_logos_per_row -%}
+
+          #shopify-section-{{ section.id }} .quick-links__link {
+            width: {{ logo_width }}%;
+          }
+        }
+      </style>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<script>
+  const ratings = `
+    {%- assign first_item = true -%}
+    {
+      {%- paginate collection.products by 500 -%}
+      {%- for product in collection.products -%}
+      {% unless first_item %},{% endunless %}"{{ product.id }}": {
+        {%- if product.metafields.loox["avg_rating"] != blank -%}"avg_rating": {{ product.metafields.loox["avg_rating"] }},{%- endif -%}
+        {%- if product.metafields.loox["num_reviews"] != blank -%}"num_reviews": {{ product.metafields.loox["num_reviews"] }}{%- endif -%}
+        {%- assign first_item = false -%}
+      }
+      {%- endfor -%}
+      {%- endpaginate -%}
+    }`
+  window.productRatings = JSON.parse(ratings)
+</script>

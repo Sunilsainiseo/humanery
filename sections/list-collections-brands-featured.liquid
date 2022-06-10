@@ -1,0 +1,95 @@
+{%comment%}
+    custom section that displays a specified set of Brand Collections
+    An Image will be displayed for each Brand Collection
+    This image will be fetched from the Collection's Metafield : metafields.grid.image
+    If this metafield does not exist, it will fetch the primary Collection Image instead
+{%endcomment%}
+
+{% if section.settings.enable_section and section.blocks.size > 0 %}
+    <section class="section" data-section-id="{{ section.id }}" data-section-type="list-collections">
+        <div class="container">
+
+            <header class="section__header">
+                <h2 class="section__title heading h3">{{ section.settings.title | escape }}</h2>
+            </header>
+
+            <div class="grid">
+                {%- for block in section.blocks -%}
+                  <div class="grid__cell 1/2--tablet 1/3--lap-and-up">
+                    <a href="{{ block.settings.brand_collection.url }}" class="collection-block-item">
+                      <div class="aspect-ratio" style="padding-bottom: 45%">
+                        {% if block.settings.brand_collection.metafields.grid.image %}
+                          {% assign block_background = block.settings.brand_collection.metafields.grid.image %}
+                        {% else %}
+                          {% assign block_background = block.settings.brand_collection.products.first.featured_media | img_url: '480x' %}
+                        {% endif %}
+                        <div class="collection-block-item__image lazyload image--fade-in" data-bg="{{ block_background }}"></div>
+                      </div>
+                      <div class="collection-block-item__title_under_image">
+                        {{ block.settings.brand_collection.title }}
+                      </div>
+
+                      {% if section.settings.show_brand_desc %}
+                        <div class="collection-block-item__desc_under_image">
+                          {{ block.settings.brand_desc }}
+                        </div>
+                      {% endif %}
+
+                    </a>
+                  </div>
+                {%- endfor -%}
+              </div>
+
+        </div>
+
+    </section>
+  {% endif %}
+
+{% schema %}
+{
+  "name": "Featured Brand Images",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Custom Section that displays Brand Collection Images as separate Blocks. The Image for a Brand Collection comes from a Collection Metafield."
+    },
+    {
+        "type": "checkbox",
+        "id": "enable_section",
+        "label": "Show this section",
+        "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Featured Brands"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_brand_desc",
+      "label": "Show Brand Descriptions",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand_image",
+      "name": "Brand Image",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "brand_collection",
+          "label": "Brand Collection",
+          "info": "Pick a Brand Collection"
+        },
+        {
+          "type": "richtext",
+          "id": "brand_desc",
+          "label": "Brand Description"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

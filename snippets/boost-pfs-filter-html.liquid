@@ -1,0 +1,145 @@
+{%- capture boost_pfs_layout -%}
+{%- case layout -%}
+{%- when 'productGridItemHtml' -%}
+{% raw %}
+<div class="product-item product-item--vertical 1/3--tablet-and-up {{gridWidthClass}} ">
+    <div class="product-item__label-list">
+        {{itemLabels}}
+    </div>
+    <a href="{{itemUrl}}" class="product-item__image-wrapper {{imageWrapperClass}}">
+        <div class="aspect-ratio {{imageAspectRatioClass}}" style="padding-bottom: {{imagePadding}}%">
+            {{itemImages}}
+        </div>
+    </a>
+    <div class="product-item__info">
+        <div class="product-item__info-inner">
+            {{itemInfo}}
+            {{itemInventory}}
+        </div>
+        {{itemQuickView}}
+    </div>
+</div>
+{% endraw %}
+
+{%- when 'quickViewHtml' -%}
+<form method="post" action="/cart/add" id="product_form_[[itemId]]" accept-charset="UTF-8" class="product-item__action-list [[quickViewClass]] button-stack" enctype="multipart/form-data">
+    <input type="hidden" name="form_type" value="product">
+    <input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="quantity" value="1">
+    <input type="hidden" name="id" value="[[variantId]]">
+    [[quickBuy]]
+    <button type="button" class="product-item__action-button [[quickViewButtonClass]] button button--small button--ternary hidden-phone" data-action="open-modal" data-secondary-action="open-quick-view" aria-controls="modal-quick-view-[[templateClass]]-template" data-product-url="[[itemUrl]]">{{ 'collection.product.quick_view' | t }}</button>
+</form>
+
+{%- when 'saleLabelHtml' -%}
+<span class="product-label product-label--on-sale">{{ 'collection.product.discount_html' | t }}</span>
+
+{%- when 'tagLabelHtml' -%}
+<span class="product-label [[tagLabelClass]]">[[tagLabel]]</span>
+
+{%- when 'imageHtml' -%}
+<img class="[[imageClass]] lazyload image--blur-up" src="[[imageUrl]]" data-media-id="[[imageId]]" data-src="[[image_url]]" data-sizes="auto" alt="[[itemTitle]]">
+
+{%- when 'reviewHtml' -%}
+<a class="product-item__reviews-badge link" href="[[itemUrl]]#product-reviews">
+    <span class="shopify-product-reviews-badge" data-id="[[itemId]]"></span>
+</a>
+
+{%- when 'quickBuyHtml' -%}
+<button type="submit" class="product-item__action-button [[quickBuyButtonClass]] button button--small button--primary" data-action="add-to-cart">{{ 'collection.product.add_to_cart' | t }}</button>
+
+{%- when 'quickBuyChooseOptionsHtml' -%}
+<a type="button" class="product-item__action-button [[quickBuyButtonClass]] button button--small button--primary" href="[[itemUrl]]">{{ 'collection.product.choose_options' | t }}</a>
+
+{%- when 'quickBuySoldOutHtml' -%}
+<button class="product-item__action-button [[quickBuyButtonClass]] button button--small button--disabled" disabled>{{ 'collection.product.sold_out' | t }}</button>
+
+{%- when 'pageItemPreviousHtml' -%}
+<a class="pagination__prev link" rel="prev" title="Previous"  href="[[itemUrl]]">
+    <svg class="icon icon--arrow-left" viewBox="0 0 8 12" role="presentation">
+        <path stroke="currentColor" stroke-width="2" d="M6 10L2 6l4-4" fill="none" stroke-linecap="square"/>
+    </svg>
+    {{ 'general.pagination.previous_page' | t }}
+</a>
+
+{%- when 'pageItemNextHtml' -%}
+<a class="pagination__next link" rel="next" title="Next" href="[[itemUrl]]">
+    {{ 'general.pagination.next_page' | t }}
+    <svg class="icon icon--arrow-right" viewBox="0 0 8 12" role="presentation">
+        <path stroke="currentColor" stroke-width="2" d="M2 2l4 4-4 4" fill="none" stroke-linecap="square"/>
+    </svg>
+</a>
+
+{%- when 'pageItemHtml' -%}
+<a href="[[itemUrl]]" class="pagination__nav-item [[activeClass]]">[[itemTitle]]</a>
+
+{%- when 'paginateHtml' -%}
+<div class="pagination__inner">
+    [[previous]]
+    <div class="pagination__nav">
+        [[pageItems]]
+    </div>
+    [[next]]
+</div>
+
+{%- when 'sortingHtml' -%}
+<button class="value-picker-button" id="sort-by-toggler" aria-haspopup="true" aria-expanded="false" aria-controls="boost-sort-by-selector" data-action="open-value-picker">
+    <span class="hidden-tablet-and-up"></span>
+    <span class="hidden-phone"></span>
+    <svg class="icon icon--arrow-bottom" viewBox="0 0 12 8" role="presentation">
+        <path stroke="currentColor" stroke-width="2" d="M10 2L6 6 2 2" fill="none" stroke-linecap="square"/>
+    </svg>
+</button>
+<div id="boost-sort-by-selector" class="value-picker">
+    <svg class="icon icon--nav-triangle-borderless" viewBox="0 0 20 9" role="presentation">
+        <path d="M.47108938 9c.2694725-.26871321.57077721-.56867841.90388257-.89986354C3.12384116 6.36134886 5.74788116 3.76338565 9.2467995.30653888c.4145057-.4095171 1.0844277-.40860098 1.4977971.00205122L19.4935156 9H.47108938z" fill="#ffffff"/>
+    </svg>
+    <div class="value-picker__inner">
+        <header class="value-picker__header">
+            <span class="value-picker__title text--strong">
+                {% assign temp = 'collections.sorting.title' | t  %} {% unless temp contains 'translation missing'  %} {{ temp }} {% else %} Sorting {% endunless %}
+            </span>
+            <button class="value-picker__close" data-action="close-value-picker" aria-controls="boost-sort-by-selector" aria-label="{{ 'general.accessibility.close' | t }}">
+                <svg class="icon icon--close" viewBox="0 0 19 19" role="presentation">
+                    <path d="M9.1923882 8.39339828l7.7781745-7.7781746 1.4142136 1.41421357-7.7781746 7.77817459 7.7781746 7.77817456L16.9705627 19l-7.7781745-7.7781746L1.41421356 19 0 17.5857864l7.7781746-7.77817456L0 2.02943725 1.41421356.61522369 9.1923882 8.39339828z" fill="currentColor" fill-rule="evenodd"></path>
+                </svg>
+              </button>
+        </header>
+        <div class="value-picker__choice-list">
+            [[sortingItems]]
+        </div>
+    </div>
+</div>
+
+{%- when 'sortingItemHtml' -%}
+<button class="value-picker__choice-item link [[sortingActiveClass]]" data-action="select-value" data-sort="[[sortingValue]]">
+    [[sortingName]]
+    <svg class="icon icon--check-2" viewBox="0 0 13 11" role="presentation">
+        <path d="M1 4.166456L5.317719 9 12 1" stroke="currentColor" stroke-width="2" fill="none" fill-rule="evenodd"/>
+    </svg>
+</button>
+
+{%- when 'showLimitHtml' -%}
+<button class="value-picker-button" aria-haspopup="true" aria-expanded="false" aria-controls="boost-display-by-selector" data-action="open-value-picker"> 
+    <span class="hidden-phone"></span>
+        <svg focusable="false" class="icon icon--arrow-bottom" viewBox="0 0 12 8" role="presentation"><path stroke="currentColor" stroke-width="2" d="M10 2L6 6 2 2" fill="none" stroke-linecap="square"></path></svg>
+</button>
+<div id="boost-display-by-selector" class="value-picker" aria-hidden="true"> 
+    <svg focusable="false" class="icon icon--nav-triangle-borderless" viewBox="0 0 20 9" role="presentation"> 
+        <path d="M.47108938 9c.2694725-.26871321.57077721-.56867841.90388257-.89986354C3.12384116 6.36134886 5.74788116 3.76338565 9.2467995.30653888c.4145057-.4095171 1.0844277-.40860098 1.4977971.00205122L19.4935156 9H.47108938z" fill="#ffffff"></path>
+    </svg> 
+    <div class="value-picker__inner"> 
+        <header class="value-picker__header"> 
+            <span class="value-picker__title text--strong">{{ 'collection.general.display' | t | json }}</span> 
+            <button class="value-picker__close" data-action="close-value-picker" aria-controls="boost-display-by-selector" aria-label="{{ 'general.accessibility.close' | t }}">
+                <svg focusable="false" class="icon icon--close" viewBox="0 0 19 19" role="presentation"><path d="M9.1923882 8.39339828l7.7781745-7.7781746 1.4142136 1.41421357-7.7781746 7.77817459 7.7781746 7.77817456L16.9705627 19l-7.7781745-7.7781746L1.41421356 19 0 17.5857864l7.7781746-7.77817456L0 2.02943725 1.41421356.61522369 9.1923882 8.39339828z" fill="currentColor" fill-rule="evenodd"></path></svg> 
+            </button> 
+        </header> 
+        <div class="value-picker__choice-list">[[showLimitItems]]</div> 
+    </div> 
+</div>
+
+{%- endcase -%}
+{%-  endcapture -%}
+{%- assign str = '}}' -%}
+{{- boost_pfs_layout | strip | strip_newlines | json | replace: '[[', '{{' | replace: ']]', str -}}

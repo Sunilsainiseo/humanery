@@ -1,0 +1,202 @@
+{%- liquid
+  assign share_url = shop.url | append: article.url
+  assign twitter_text = article.title | url_param_escape
+  assign pinterest_description = article.excerpt_or_content | strip_html | truncatewords: 15 | url_param_escape
+  assign pinterest_image = article.image | img_url: 'large' | prepend: 'https:'
+
+  assign article_words = article.content | strip_html | split: ' ' | size
+  assign words_per_minute = 250
+  assign time_to_read = article_words | times: 1.0 | divided_by: words_per_minute | round
+-%}
+
+{%- comment -%} Additional sections editable from Advanced Custom Fields app {%- endcomment -%}
+{%- assign gallery_visible = false -%}
+{%- capture gallery_section -%}
+  {%- assign section_count = article.metafields.journal.gallery_image | size | minus: 1 -%}
+  {%- if section_count >= 0 -%}
+    <div class="journal-gallery" data-section-type="journal-gallery">
+      <div class="journal-gallery__controls">
+        <button class="journal-gallery__controls-button journal-gallery__controls-button--prev disabled">{%- render 'icon', icon: 'arrow-right-short-journal' -%}</button>
+        <button class="journal-gallery__controls-button journal-gallery__controls-button--next">{%- render 'icon', icon: 'arrow-right-short-journal' -%}</button>
+      </div>
+      <div class="journal-gallery__carousel">
+        {%- for i in (0..section_count) -%}
+          <div class="journal-gallery__slide">
+            <div class="journal-gallery__item">
+              <img class="lazyload image--fade-in" data-src="{{ article.metafields.journal.gallery_image[i] }}" alt="{{ article.title }}">
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="journal-gallery__popup" aria-hidden="true">
+        <button type="button" class="journal-gallery__popup-exit">{%- render 'icon', icon: 'close' -%}</button>
+        <div class="journal-gallery__controls">
+          <button class="journal-gallery__controls-button journal-gallery__controls-button--prev">{%- render 'icon', icon: 'arrow-right-short-journal' -%}</button>
+          <button class="journal-gallery__controls-button journal-gallery__controls-button--next">{%- render 'icon', icon: 'arrow-right-short-journal' -%}</button>
+        </div>
+        <div class="journal-gallery__popup-carousel">
+          {%- for i in (0..section_count) -%}
+            <div class="journal-gallery__popup-slide">
+              <div class="journal-gallery__item">
+                <img class="lazyload image--fade-in" data-src="{{ article.metafields.journal.gallery_image[i] }}" alt="{{ article.title }}">
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture text_image_section -%}
+  {%- assign section_count = article.metafields.journal.text | size | minus: 1 -%}
+  {%- if section_count >= 0 -%}
+    {%- for i in (0..section_count) -%}
+      {%- liquid
+        if article.metafields.journal.order[i] == 'Text first'
+          assign section_order = 'text-first'
+        else
+          assign section_order = 'image-first'
+        endif
+      -%}
+      {%- if article.metafields.journal.display_gallery[i] == 'true' and gallery_visible == false -%}
+        {%- assign gallery_visible = true -%}
+        {{ gallery_section }}
+      {%- else -%}
+        <div class="image-with-text {{ section_order }}">
+          <div class="image-with-text__image-container">
+            {%- if article.metafields.journal.image[i] != blank -%}
+                <img class="lazyload image--fade-in" data-src="{{ article.metafields.journal.image[i] }}" alt="{{ article.title }}">
+                <noscript><img src="{{ article.metafields.journal.image[i] }}" alt="{{ article.title }}"></noscript>
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
+          <div class="image-with-text__text-container">
+            <div class="image-with-text__text-aligner">
+              {%- if article.metafields.journal.text[i] != blank or article.metafields.journal.button_text[i] != blank -%}
+              <div class="rte">
+                {%- if article.metafields.journal.text[i] != blank -%}{{ article.metafields.journal.text[i] }}{%- endif -%}
+                {%- if article.metafields.journal.button_text[i] != blank and article.metafields.journal.button_url[i] != blank -%}
+                  <a href="{{ article.metafields.journal.button_url[i] }}" class="button button--primary">{{ article.metafields.journal.button_text[i] }}</a>
+                {%- endif -%}
+              </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+<section class="journal-blog journal-blog--article">
+  {%- if section.settings.show_back_to_blog -%}
+  <div class="container">
+    <a href="{{ blog.url }}" class="journal-blog__back">
+      {%- render 'icon', icon: 'arrow-right-journal' -%}
+      <span>{{ 'back_to' | t }}</span>
+    </a>
+  </div>
+  {%- endif -%}
+  <div class="journal-blog__wrapper container">
+    <article class="journal-blog__main journal-article">
+      {%- liquid
+        assign article_category = ''
+        for tag in article.tags
+          if tag contains '_category:'
+            assign article_category = tag | split: ':' | last | upcase
+          endif
+        endfor
+      -%}
+      {%- if article_category != '' -%}
+        <p class="blog-item-category">{{ article_category }}</p>
+      {%- endif -%}
+      <div class="journal-article__header">
+        {%- if article.image != blank -%}
+        <div class="journal-article__banner">
+          <img class="lazyload image--fade-in" data-src="{{ article.image.src | img_url: '700x' }}" alt="{{ article.title }}">
+        </div>
+        {%- endif -%}
+        <div class="blog-meta">
+          {%- if section.settings.show_back_to_blog -%}
+          <div class="blog-meta__item blog-meta__item--author">
+            {%- render 'icon', icon: 'author-journal' -%}
+            <span>{{ article.author }}</span>
+          </div>
+          {%- endif -%}
+          <div class="blog-meta__item blog-meta__item--date">
+            {%- render 'icon', icon: 'calendar-journal' -%}
+            <span>{{ article.published_at | date: format: 'abbreviated_date' }}</span>
+          </div>
+          <div class="blog-meta__item blog-meta__item--reading">
+            {%- render 'icon', icon: 'clock-journal' -%}
+            <span>{{ time_to_read }} {{ time_to_read | pluralize: 'min', 'mins' }} {{ 'reading' | t }}</span>
+          </div>
+        </div>
+      </div>
+      <h1 class="journal-article__heading heading h1">{{ article.title }}</h1>
+      <div class="journal-article__content rte">
+        {{ article.content }}
+      </div>
+      <div class="journal-article__additional">
+        {{ text_image_section }}
+        {%- unless gallery_visible -%}{{ gallery_section }}{%- endunless -%}
+      </div>
+    </article>
+    <aside class="journal-blog__sidebar">
+      <div class="journal-blog__sidebar-content">
+        {%- if section.settings.show_share_icons -%}
+        <div class="blog-block blog-share">
+          <h2 class="blog-block__header">{{ 'share_this' | t }}</h2>
+          <ul class="blog-block__list">
+            <li class="blog-block__item">
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'general.social.linkedin_share' | t }}">{%- render 'icon', icon: 'linkedin-square' -%}</a>
+            </li>
+            <li class="blog-block__item">
+              <a href="https://www.facebook.com/sharer.php?u={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'general.social.facebook_share' | t }}">{%- render 'icon', icon: 'facebook-square' -%}</a>
+            </li>
+            <li class="blog-block__item">
+              <a href="https://twitter.com/share?{% if twitter_text != blank %}text={{ twitter_text }}&{% endif %}url={{ share_url }}" target="_blank" rel="noopener" aria-label="{{ 'general.social.twitter_tweet' | t }}">{%- render 'icon', icon: 'twitter-square' -%}</a>
+            </li>
+          </ul>
+        </div>
+        {%- endif -%}
+      </div>
+    </aside>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Journal: Article",
+    "locales": {
+      "en": {
+        "back_to": "Back to Journal",
+        "share_this": "SHARE THIS",
+        "reading": "reading"
+      }
+    },
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_back_to_blog",
+        "label": "Show back to blog",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_author",
+        "label": "Show author",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_share_icons",
+        "label": "Show share icons",
+        "default": true
+      }
+    ],
+    "blocks": []
+  }
+{% endschema %}

@@ -1,0 +1,59 @@
+{%comment%}
+    see the comment at the beginning of snippets/logo-list-brand-collection-list.liquid
+    for a description of the motivation behind this section
+{%endcomment%}
+
+{% if section.settings.enable_section and section.blocks.size > 0 %}
+  <section class="section" data-section-id="{{ section.id }}" data-section-type="logo-list">
+      {% render 'logo-list-brand-collection-list' %}
+  </section>
+{% endif %}
+  
+{% schema %}
+  {
+    "name": "Clean Brand Logos",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Clean Brands"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_section",
+        "label": "Show this section",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "link_title",
+        "label": "Link title"
+      },
+      {
+        "type": "url",
+        "id": "link",
+        "label": "Link"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "logo",
+        "name": "Logo",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+            "info": "250 x 80px .jpg recommended"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

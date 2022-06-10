@@ -1,0 +1,144 @@
+{%- assign collection_suffix = 'brand' -%}
+
+{% if section.settings.enable_section %}
+  <section data-section-id="{{ section.id }}" data-section-type="list-collections">
+    <div class="container">
+
+      {%comment%}
+      for the list brand template, moving the breadcrumb up to templates/list-collections.brands.liquid
+      TODO : do this for the other list collection templates too
+      <div class="page__sub-header">
+        {%- include 'breadcrumb-list-collections' -%}
+      </div>
+      {%endcomment%}
+      
+      {%- assign has_selected_collections = false -%}
+
+      {%- for collection in collections -%}
+        {%- if collection.template_suffix contains collection_suffix -%}
+          {%- assign has_selected_collections = true -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_selected_collections -%}
+        <div class="collection-list__section">
+          <header class="page__header page__header--stack page__header--centered">
+            <h1 class="page__title heading h1">{{ 'collection.general.all_brands_title' | t }}</h1>
+          </header>
+
+          {% assign brand_collections = collections | where: "template_suffix", collection_suffix %}
+          
+          <div class="grid">
+            {%- for collection in brand_collections -%}
+              <div class="grid__cell 1/2--tablet 1/3--lap-and-up">
+                <a href="{{ collection.url }}" class="collection-block-item {% if section.settings.grid_item_overlay %}collection-block-item--overlay{% endif %}">
+                  <div class="aspect-ratio" style="padding-bottom: 45%">
+                    {% if collection.metafields.grid.image %}
+                      {% assign block_background = collection.metafields.grid.image %}
+                    {% else %}
+                      {% assign block_background = collection.products.first.featured_media | img_url: '480x' %}
+                    {% endif %}
+                    <div class="collection-block-item__image lazyload image--fade-in" data-bg="{{ block_background }}"></div>
+                  </div>
+
+                  {%- if section.settings.show_grid_item_content -%}
+                    <div class="collection-block-item__content" style="color: {{ section.settings.show_grid_item_content_color }}">
+                      {% unless section.settings.hide_grid_item_title %}
+                        <p class="collection-block-item__content__title">{{ collection.title }}</p>
+                      {% endunless %}
+                      {% assign content = collection.metafields.grid.content %}
+                      {% if content == blank %}
+                        <p class="collection-block-item__content__desc">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+                      {% else %}
+                        <p class="collection-block-item__content__desc">{{ collection.metafields.grid.content }}</p>
+                      {% endif %}
+                    </div>
+                  {%- endif -%}
+                </a>
+              </div>
+            {%- endfor -%}
+          </div>
+        
+        </div>
+      {%- endif -%}
+    </div>
+
+    <style>
+      #shopify-section-{{ section.id }} .collection-block-item--overlay::before {
+        {%- assign overlay_opacity = section.settings.collection_overlay_opacity | divided_by: 100.0 -%}
+        background: {{ '#000000' | color_modify: 'alpha', overlay_opacity }}
+      }
+    </style>
+  </section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Brand collection images",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "You can [learn more](https://support.maestrooo.com/article/185-collection-how-to-use-the-brand-template) about how to set up brand collections."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_section",
+      "label": "Show this section",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Grid settings"
+    },
+    {
+      "type": "range",
+      "id": "pagination_step",
+      "label": "Pagination step",
+      "min": 6,
+      "max": 36,
+      "step": 3,
+      "unit": "pcs",
+      "default": 21
+    },
+    {
+      "type": "header",
+      "content": "Block settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_grid_item_content",
+      "label": "Show grid item content",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_grid_item_title",
+      "label": "Hide grid item title",
+      "default": false,
+      "info": "This option works only when grid item content is visible"
+    },
+    {
+      "type": "color",
+      "id": "show_grid_item_content_color",
+      "label": "Grid item content color",
+      "default": "#fff"
+    },
+    {
+      "type": "checkbox",
+      "id": "grid_item_overlay",
+      "label": "Apply grid item overlay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "collection_overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 20
+    }
+  ]
+}
+{% endschema %}

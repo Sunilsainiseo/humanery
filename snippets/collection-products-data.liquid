@@ -1,0 +1,24 @@
+{%- assign collection_products = '' -%}
+{%- paginate collection.products by 999 -%}
+  {%- for product in collection.products -%}
+    {%- assign collection_products = collection_products | append: ',' | append: product.url -%}
+  {%- endfor -%}
+  {%- assign collection_products = collection_products | remove_first: ',' -%}
+{%- endpaginate -%}
+
+<script>
+  var collectionProducts = `{{ collection_products }}`;
+  collectionProducts = collectionProducts.split(',');
+
+  var collectionData = {
+    "collection": "{{ collection.handle }}",
+    "products": collectionProducts
+  }
+
+  if (window.collectionsData != undefined) {
+    window.collectionsData.push(collectionData);
+  } else {
+    window.collectionsData = [];
+    window.collectionsData.push(collectionData);
+  }
+</script>

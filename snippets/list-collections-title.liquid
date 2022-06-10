@@ -1,0 +1,14 @@
+{%- liquid
+  case template.suffix
+    when 'products'
+      assign title = 'collection.general.all_products' | t
+    when 'brands'
+      assign title = 'collection.general.all_brands' | t
+    when 'influencers'
+      assign title = 'collection.general.all_influencers' | t
+    else
+      assign title = 'collection.general.all_collections' | t
+  endcase
+
+  echo title
+-%}
